@@ -18,37 +18,37 @@ import networkx as nx
 import math
 import timeit
 import code
-import js
+# import js
 
 ## settings
-# NUM_SIMS = int(1e3)
-# NUM_PLAYERS = 8
-# START_HP = 100
-# USING_CSV = False
-# INPUT_FILENAME = "./str_series_tempo.csv"
-# STAGE_DMG = {2: 2, 3: 5, 4: 8, 5: 10, 6: 12, 7: 17}
-# PVE_ROUND_NUMS = [5, 11, 17, 23, 29, 35] # hardcoded for last_x speedup
-# COMP_MATCHUPS = pd.DataFrame([[1.0, 1.0, 1.0, 1.0], [1.0, 1.0, 0.5, 2.0], [1.0, 2.0, 1.0, 0.5], [1.0, 0.5, 2.0, 1.0]], index=["Vanilla", "Rock", "Paper", "Scissors"],columns=["Vanilla", "Rock", "Paper", "Scissors"])
-# COMP_TYPES = {'p1': 'Vanilla', 'p2': 'Vanilla', 'p3': 'Vanilla', 'p4': 'Vanilla', 'p5': 'Vanilla', 'p6': 'Vanilla', 'p7': 'Vanilla', 'p8': 'Vanilla'}
-
-NUM_SIMS = js.numSims
+NUM_SIMS = int(1e2)
 NUM_PLAYERS = 8
-START_HP = {"p"+str(x["Player"]):x["HP"] for x in js.startingHP.to_py()}
+START_HP = {"p"+str(x): 100 for x in range(1,9)}
 USING_CSV = False
-# INPUT_FILENAME = "./str_series_tempo.csv"
-STAGE_DMG = {int(x["stage"]):x["damage"] for x in js.stageDamage.to_py()}
+INPUT_FILENAME = "./str_series_tempo.csv"
+STAGE_DMG = {2: 2, 3: 5, 4: 8, 5: 10, 6: 12, 7: 17}
 PVE_ROUND_NUMS = [5, 11, 17, 23, 29, 35] # hardcoded for last_x speedup
+COMP_MATCHUPS = pd.DataFrame([[1.0, 1.0, 1.0, 1.0], [1.0, 1.0, 0.5, 2.0], [1.0, 2.0, 1.0, 0.5], [1.0, 0.5, 2.0, 1.0]], index=["Vanilla", "Rock", "Paper", "Scissors"],columns=["Vanilla", "Rock", "Paper", "Scissors"])
+COMP_TYPES = {'p1': 'Vanilla', 'p2': 'Vanilla', 'p3': 'Vanilla', 'p4': 'Vanilla', 'p5': 'Vanilla', 'p6': 'Vanilla', 'p7': 'Vanilla', 'p8': 'Vanilla'}
 
-# have to do a little massaging to get matchups table (triangle matrix) into useful form (filled w/ inverse vals)
-COMP_MATCHUPS = pd.DataFrame(js.matchups.to_py()).set_index('row')
-COMP_MATCHUPS.index.name = None
-COMP_MATCHUPS = COMP_MATCHUPS.replace(r'^\s*$', np.nan, regex=True).infer_objects(copy=False)
-COMP_MATCHUPS = COMP_MATCHUPS.fillna(1/COMP_MATCHUPS.T)
-COMP_TYPES = {}
-js_playerProfilesMetadata = js.playerProfilesMetadata.to_py()
-for profile in js_playerProfilesMetadata.keys():
-    if "Player " in profile:
-        COMP_TYPES["p"+profile.replace("Player ","")] = js_playerProfilesMetadata[profile]["comp_type"]
+# NUM_SIMS = js.numSims
+# NUM_PLAYERS = 8
+# START_HP = {"p"+str(x["Player"]):x["HP"] for x in js.startingHP.to_py()}
+# USING_CSV = False
+# # INPUT_FILENAME = "./str_series_tempo.csv"
+# STAGE_DMG = {int(x["stage"]):x["damage"] for x in js.stageDamage.to_py()}
+# PVE_ROUND_NUMS = [5, 11, 17, 23, 29, 35] # hardcoded for last_x speedup
+
+# # have to do a little massaging to get matchups table (triangle matrix) into useful form (filled w/ inverse vals)
+# COMP_MATCHUPS = pd.DataFrame(js.matchups.to_py()).set_index('row')
+# COMP_MATCHUPS.index.name = None
+# COMP_MATCHUPS = COMP_MATCHUPS.replace(r'^\s*$', np.nan, regex=True).infer_objects(copy=False)
+# COMP_MATCHUPS = COMP_MATCHUPS.fillna(1/COMP_MATCHUPS.T)
+# COMP_TYPES = {}
+# js_playerProfilesMetadata = js.playerProfilesMetadata.to_py()
+# for profile in js_playerProfilesMetadata.keys():
+#     if "Player " in profile:
+#         COMP_TYPES["p"+profile.replace("Player ","")] = js_playerProfilesMetadata[profile]["comp_type"]
 
 ## debug tools
 DEBUG_PRINT = False
